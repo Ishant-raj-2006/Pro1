@@ -1,14 +1,12 @@
-import {initializeApp} from"https://www.gstatic.com/firebasejs/10.14/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  set,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14/firebase-database.js";
 
-import{
-    getDatabase,
-    ref,
-    push,
-    set,
-    serverTimestamp
-} form "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBUjaRWLRCp0pARchGrng-ovtSv6bXu0sQ",
   authDomain: "pro1-d92af.firebaseapp.com",
@@ -20,40 +18,43 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const app= getDatabase(app);
-const from = document.getElementById("pro1");
-const btn = form.queryselector("button");
+const db = getDatabase(app);
+
+const form = document.getElementById("studentForm");
+const btn = form ? form.querySelector("button") : null;
 const done = document.getElementById("Done");
 
-form.addEventListerner("Submit", async (e) => {
-    e.preventDefault();
-    btn.disable = true;
-    btn.textContent = "Submitting..";
-    done.textContent = "";
-    done.className ="";
-
-    try{
-        const newStudentRef = push(ref(db,"student"));
-        await set(newStudentRef , {
-            name: document.getElementById("name").value.trim(),
-            Roll:document.getElementById("Roll").value.trim(),
-            StudentId:getElementById("StudentId").value.trim(),
-            Email:getElementById("Email").value.trim(),
-            DOB:document.getElementById(dob).value,
-            submittedAt : serverTimestamp()
-        })
-    
-
-
-done.textContent="Details submitted successfully. "
-done.className="Success";
-} form.reset();
-
-catch(error);
-console.error("Firebase error ", error);
-done.textContent ="Something went wrong. Please try again later. ";
-done.className = "error";
-finally{
-    btn.textContent="Submit";
+if (!form || !btn || !done) {
+  throw new Error("Required form elements are missing.");
 }
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
+  done.textContent = "";
+  done.className = "";
+
+  try {
+    const newStudentRef = push(ref(db, "students"));
+    await set(newStudentRef, {
+      name: document.getElementById("name").value.trim(),
+      roll: document.getElementById("Roll").value.trim(),
+      studentId: document.getElementById("studentId").value.trim(),
+      email: document.getElementById("Email").value.trim(),
+      dob: document.getElementById("DOB").value,
+      submittedAt: serverTimestamp()
+    });
+
+    done.textContent = "Details submitted successfully.";
+    done.className = "success";
+    form.reset();
+  } catch (error) {
+    console.error("Firebase error:", error);
+    done.textContent = "Something went wrong. Please try again later.";
+    done.className = "error";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Submit";
+  }
 });
