@@ -29,6 +29,8 @@ if (!form || !btn || !done) {
   throw new Error("Required form elements are missing.");
 }
 
+done.textContent = "Ready to submit.";
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   btn.disabled = true;
@@ -52,7 +54,8 @@ form.addEventListener("submit", async (e) => {
     form.reset();
   } catch (error) {
     console.error("Firebase error:", error);
-    done.textContent = `Could not save details: ${error.message}`;
+    const message = error instanceof Error ? error.message : String(error);
+    done.textContent = `Could not save details: ${message}`;
     done.className = "error";
   } finally {
     btn.disabled = false;
