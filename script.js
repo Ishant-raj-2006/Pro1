@@ -10,6 +10,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyBUjaRWLRCp0pARchGrng-ovtSv6bXu0sQ",
   authDomain: "pro1-d92af.firebaseapp.com",
+  databaseURL: "https://pro1-d92af-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "pro1-d92af",
   storageBucket: "pro1-d92af.firebasestorage.app",
   messagingSenderId: "941256236916",
@@ -51,7 +52,7 @@ form.addEventListener("submit", async (e) => {
     form.reset();
   } catch (error) {
     console.error("Firebase error:", error);
-    done.textContent = "Something went wrong. Please try again later.";
+    done.textContent = `Could not save details: ${error.message}`;
     done.className = "error";
   } finally {
     btn.disabled = false;
