@@ -1,11 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
   getDatabase,
   ref,
   push,
   set,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.14/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBUjaRWLRCp0pARchGrng-ovtSv6bXu0sQ",
@@ -18,15 +18,24 @@ const firebaseConfig = {
   measurementId: "G-CQNLWV0X31"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
 const form = document.getElementById("studentForm");
 const btn = form ? form.querySelector("button") : null;
 const done = document.getElementById("Done");
 
 if (!form || !btn || !done) {
   throw new Error("Required form elements are missing.");
+}
+
+let db;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app);
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+  const message = error instanceof Error ? error.message : String(error);
+  done.textContent = `Firebase setup failed: ${message}`;
+  done.className = "error";
+  throw error;
 }
 
 done.textContent = "Ready to submit.";
